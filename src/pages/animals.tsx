@@ -26,37 +26,95 @@ const animals: Animal[] = [
   { id: 15, name: "Feathers", kind: "chicken", age: 2, hasBeenFed: true },
   { id: 16, name: "Piglet", kind: "pig", age: 4, hasBeenFed: true },
 ];
+interface AnimalListItemProps {
+  animal: Animal;
+}
 
-const Animals = () => {
-  const animalFromFind = animals.find((animal) => animal.name === "Feathers");
-
+const AnimalFeed = ({ animal }: AnimalListItemProps) => {
   return (
-    <div>
-      <h1>Welcome to the farm!</h1>
-      <h2>
-        {animalFromFind === undefined
-          ? "couldn't find the animal!"
-          : `Today in the spotlight: ${animalFromFind?.name} the
-                  ${animalFromFind?.kind}`}
-      </h2>
+    <>
+      <p>
+        <img src="/happy-animal.png" />
+        {animal.hasBeenFed ? "I am happy 😌" : "I am hungry  🥺"}
+        {animal.hasBeenFed && "Yaaay🌞 "}
+      </p>
+    </>
+  );
+};
+
+const AnimalListItem = ({ animal }: AnimalListItemProps) => {
+  const getEmoji = (kind: AnimalKind) => {
+    switch (kind) {
+      case "cow":
+        return "🐮";
+      case "sheep":
+        return "🐑";
+      case "chicken":
+        return "🐔";
+      case "pig":
+        return "🐷";
+      default:
+        return "";
+    }
+  };
+  // const animalFromFind = animals.find((animal) => animal.name === "Feathers");
+  const animalEmoji = getEmoji(animal.kind);
+  return (
+    <>
+      <li>
+        <h2>{animal.name}</h2>
+        <h3>{animalEmoji}</h3>
+        <p>{`I am a ${animal.age} year old ${animal.kind}!`}</p>
+        {/* <p>
+          {animalFromFind === undefined
+            ? "couldn't find the animal!"
+            : `Today in the spotlight: ${animalFromFind?.name} the
+            ${animalFromFind?.kind}`}
+        </p> */}
+        <AnimalFeed animal={animal} />
+      </li>
+    </>
+  );
+};
+
+interface AnimalsListProps {
+  kind: AnimalKind;
+}
+const AnimalsList = ({ kind }: AnimalsListProps) => {
+  return (
+    <>
       <ul>
         {animals
           .filter((animal) => animal.kind === "cow")
           .sort((animalA, animalB) => animalA.age - animalB.age)
           .map((animal) => {
-            return (
-              <li key={animal.id}>
-                <h2>{animal.name}</h2>
-                <p>{`I am a ${animal.age} year old ${animal.kind}!`}</p>
-                <p>
-                  {animal.hasBeenFed
-                    ? "I am happy 😌"
-                    : "I am hungry  🥺"}
-                </p>
-              </li>
-            );
+            return <AnimalListItem key={animal.id} animal={animal} />;
           })}
       </ul>
+    </>
+  );
+};
+
+const Animals = () => {
+  return (
+    <div>
+      <h1>Welcome to the farm!</h1>
+      <section>
+        <h2>Our Cows</h2>
+        <AnimalsList kind="cow" />
+      </section>
+      <section>
+        <h2>Our Chickens</h2>
+        <AnimalsList kind="chicken" />
+      </section>
+      <section>
+        <h2>Our Sheeps</h2>
+        <AnimalsList kind="sheep" />
+      </section>
+      <section>
+        <h2>Our Pigs</h2>
+        <AnimalsList kind="pig" />
+      </section>
     </div>
   );
 };
